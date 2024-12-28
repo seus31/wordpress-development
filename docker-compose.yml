@@ -1,0 +1,57 @@
+services:
+  wordpress:
+    image: wordpress:latest
+    container_name: wordpress
+    ports:
+      - "8000:80"
+    environment:
+      WORDPRESS_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      WORDPRESS_DB_USER: ${DATABASE_USER}
+      WORDPRESS_DB_PASSWORD: ${DATABASE_PASSWORD}
+      WORDPRESS_DB_NAME: ${DATABASE_NAME}
+    volumes:
+      - ./wordpress:/var/www/html
+    depends_on:
+      - db
+
+  wp-cli:
+    image: wordpress:cli
+    container_name: wp-cli
+    working_dir: /var/www/html
+    environment:
+      WORDPRESS_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      WORDPRESS_DB_USER: ${DATABASE_USER}
+      WORDPRESS_DB_PASSWORD: ${DATABASE_PASSWORD}
+      WORDPRESS_DB_NAME: ${DATABASE_NAME}
+    depends_on:
+      - wordpress
+      - db
+    volumes:
+      - ./wordpress:/var/www/html
+      - ./docker/wordpress/php.ini:/usr/local/etc/php.ini
+    command: "--info"
+
+  db:
+    build: ./docker/mysql
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_USER: ${DATABASE_USER}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+      TZ: "Asia/Tokyo"
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin
+    depends_on:
+      - db
+    ports:
+      - "8080:80"
+
+volumes:
+  db-data:
+   driver: local
