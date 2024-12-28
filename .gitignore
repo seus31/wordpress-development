@@ -46,3 +46,22 @@ wp-config.php
 # Note: If you wish to whitelist themes,
 # uncomment the next line
 #/wp-content/themes
+
+/wordpress/*
+!/wordpress/favicon.ico
+!/wordpress/google*.html
+
+!/wordpress/wp-content
+/wordpress/wp-content/*
+
+!/wordpress/wp-content/plugins
+/wordpress/wp-content/plugins/*
+!/wordpress/wp-content/plugins/.keep
+#カスタムのプラグインファイルなどは以下の様に除外する
+#!/wordpress/wp-content/plugins/my-plugin
+
+!/wordpress/wp-content/themes
+/wordpress/wp-content/themes/*
+!/wordpress/wp-content/themes/.keep
+#カスタムのテーマファイルなどは以下の様に除外する
+#!/wordpress/wp-content/themes/my-theme
